@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  
+  --color-primary-500: #6342E8;
+  --color-primary-600: #5235C4;
+  --color-primary-700: #4229A3;
+}
+
+@layer base {
+  body {
+    @apply font-sans antialiased text-gray-900 bg-[#F8F6FE];
+  }
+}
+
+/* Custom Scrollbar for sliders */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
