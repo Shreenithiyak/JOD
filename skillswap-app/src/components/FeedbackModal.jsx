@@ -12,7 +12,8 @@ const FeedbackModal = ({ isOpen, onClose }) => {
   const [food, setFood] = useState('Premium');
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     setIsSubmitted(true);
     setTimeout(() => {
       setIsSubmitted(false);
@@ -49,7 +50,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
           </p>
         </div>
 
-        <div className="space-y-6">
+        <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-6">
           
           {/* Overall Experience */}
           <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-gray-100 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
@@ -230,7 +231,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
           {/* Submit */}
           <div className="text-center pt-4 animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
             <button 
-              onClick={handleSubmit}
+              type="submit"
               disabled={isSubmitted}
               className={`inline-flex items-center justify-center gap-3 text-white font-bold py-3.5 px-12 rounded-full shadow-lg transition-all text-sm ${isSubmitted ? 'bg-green-500 hover:bg-green-600 shadow-green-500/30' : 'bg-primary-600 hover:bg-primary-700 shadow-primary-500/30'}`}
             >
@@ -246,7 +247,7 @@ const FeedbackModal = ({ isOpen, onClose }) => {
             )}
           </div>
 
-        </div>
+        </form>
       </div>
     </div>
   );
