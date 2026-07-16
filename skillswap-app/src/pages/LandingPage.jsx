@@ -61,16 +61,6 @@ const LandingPage = () => {
             Discover SkillSwap festivals happening across different cities. Learn from experts, join hands-on workshops, and unlock new crafts.
           </p>
 
-          {/* Call to Action Buttons */}
-          <div className="flex flex-wrap gap-4 mb-12">
-            <button onClick={() => openAuthModal('signup')} className="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-8 rounded-full transition-colors shadow-lg shadow-primary-600/30">
-              Join Event
-            </button>
-            <button onClick={() => openAuthModal('login')} className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/30 font-bold py-3 px-8 rounded-full transition-colors">
-              Sign In
-            </button>
-          </div>
-          
           {/* Search/Filter Bar */}
           <div className="bg-white/90 backdrop-blur-md p-2 rounded-full shadow-2xl flex flex-col sm:flex-row items-center gap-2 w-full max-w-3xl border border-white/50">
             <div className="flex items-center flex-1 w-full px-4 py-2 border-b sm:border-b-0 sm:border-r border-gray-200">
