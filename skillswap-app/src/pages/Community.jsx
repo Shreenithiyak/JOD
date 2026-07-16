@@ -268,7 +268,7 @@ const Community = () => {
               Our curatorial team is currently reviewing applications for the Summer Season. Secure your space in the future of skills.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="bg-white text-primary-800 font-bold py-4 px-8 rounded-full hover:bg-gray-50 transition-colors shadow-lg text-sm text-center">
+              <button className="bg-white text-gray-900 font-extrabold py-4 px-8 rounded-full hover:bg-gray-50 transition-colors shadow-lg text-sm text-center">
                 Apply to Organize
               </button>
               <button className="bg-transparent border-2 border-white/30 text-white font-bold py-4 px-8 rounded-full hover:bg-white/10 hover:border-white/50 transition-colors text-sm text-center">
