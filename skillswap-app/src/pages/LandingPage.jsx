@@ -277,7 +277,7 @@ const FestivalCard = ({ city, date, loc, upcoming, mentors, img, tag, path }) =>
       </div>
       <div className="mt-4 flex justify-between items-center border-t border-gray-50 pt-4">
         <span className="text-xs text-red-500 font-medium">Only 12 tickets left!</span>
-        <Link to={path} className="text-sm font-bold text-primary-600 hover:text-primary-700 flex items-center gap-1">
+        <Link to="/login" className="text-sm font-bold text-primary-600 hover:text-primary-700 flex items-center gap-1">
           Explore →
         </Link>
       </div>
