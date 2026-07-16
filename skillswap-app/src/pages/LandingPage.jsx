@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import AuthModal from '../components/AuthModal';
 import { 
   FaMapMarkerAlt, FaCalendarAlt, FaSearch, FaChevronLeft, FaChevronRight,
   FaLaptopCode, FaRobot, FaCamera, FaPalette, FaUtensils, FaMusic, FaBriefcase, FaDumbbell,
@@ -8,6 +9,7 @@ import {
 
 const LandingPage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const heroImages = [
     '/hero-banner.jpg', // Main stage
@@ -25,6 +27,7 @@ const LandingPage = () => {
   }, [heroImages.length]);
 
   return (
+    <>
     <div className="pt-16 pb-20 bg-gray-50">
       
       {/* 1. Hero Banner with Auto-Slider */}
@@ -95,17 +98,17 @@ const LandingPage = () => {
           <FestivalCard 
             city="Chennai" date="Oct 24" loc="ECR Coastal Grounds" 
             upcoming="45+" mentors="12" img="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=600" 
-            tag="HOT EVENT" path="/login" 
+            tag="HOT EVENT" onExplore={() => setIsAuthModalOpen(true)} 
           />
           <FestivalCard 
             city="Bangalore" date="Nov 05" loc="Electronic City" 
             upcoming="60+" mentors="25" img="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&q=80&w=600" 
-            tag="FILLING FAST" path="/login" 
+            tag="FILLING FAST" onExplore={() => setIsAuthModalOpen(true)} 
           />
           <FestivalCard 
             city="Hyderabad" date="Nov 22" loc="Hitex Exhibition" 
             upcoming="30+" mentors="15" img="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=600" 
-            tag="PREMIUM" path="/login" 
+            tag="PREMIUM" onExplore={() => setIsAuthModalOpen(true)} 
           />
         </div>
       </div>
@@ -243,21 +246,23 @@ const LandingPage = () => {
       </div>
 
     </div>
+    <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+    </>
   );
 };
 
 export default LandingPage;
 
 // Helper Components
-const FestivalCard = ({ city, date, loc, upcoming, mentors, img, tag, path }) => (
+const FestivalCard = ({ city, date, loc, upcoming, mentors, img, tag, onExplore }) => (
   <div className="bg-white rounded-3xl p-4 shadow-sm border border-gray-100 hover:shadow-lg transition-shadow group">
-    <div className="relative h-48 rounded-2xl overflow-hidden mb-4 cursor-pointer">
-      <Link to={path}>
+    <div className="relative h-48 rounded-2xl overflow-hidden mb-4 cursor-pointer" onClick={onExplore}>
+      <div>
         <img src={img} alt={city} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
         <div className="absolute top-4 right-4 bg-primary-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
           {tag}
         </div>
-      </Link>
+      </div>
     </div>
     <div className="px-2">
       <div className="flex justify-between items-center mb-1">
@@ -277,9 +282,9 @@ const FestivalCard = ({ city, date, loc, upcoming, mentors, img, tag, path }) =>
       </div>
       <div className="mt-4 flex justify-between items-center border-t border-gray-50 pt-4">
         <span className="text-xs text-red-500 font-medium">Only 12 tickets left!</span>
-        <Link to={path} className="text-sm font-bold text-primary-600 hover:text-primary-700 flex items-center gap-1">
+        <button onClick={onExplore} className="text-sm font-bold text-primary-600 hover:text-primary-700 flex items-center gap-1">
           Explore →
-        </Link>
+        </button>
       </div>
     </div>
   </div>
