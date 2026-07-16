@@ -8,6 +8,7 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const isDashboard = location.pathname === '/dashboard';
+  const isLandingPage = location.pathname === '/';
   
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
@@ -58,14 +59,16 @@ const Navbar = () => {
               </Link>
             </div>
 
-            <div className="hidden md:flex items-center space-x-8">
-              <Link to="/festivals" className={`text-sm font-medium ${location.pathname === '/festivals' ? 'text-primary-600 border-b-2 border-primary-600 px-1 py-5' : 'text-gray-600 hover:text-gray-900'}`}>Festivals</Link>
-              <Link to="/workshops" className={`text-sm font-medium ${location.pathname === '/workshops' ? 'text-primary-600 border-b-2 border-primary-600 px-1 py-5' : 'text-gray-600 hover:text-gray-900'}`}>Workshops</Link>
-              <Link to="/community" className={`text-sm font-medium ${location.pathname === '/community' ? 'text-primary-600 border-b-2 border-primary-600 px-1 py-5' : 'text-gray-600 hover:text-gray-900'}`}>Community</Link>
-            </div>
+            {!isLandingPage && (
+              <div className="hidden md:flex items-center space-x-8">
+                <Link to="/festivals" className={`text-sm font-medium ${location.pathname === '/festivals' ? 'text-primary-600 border-b-2 border-primary-600 px-1 py-5' : 'text-gray-600 hover:text-gray-900'}`}>Festivals</Link>
+                <Link to="/workshops" className={`text-sm font-medium ${location.pathname === '/workshops' ? 'text-primary-600 border-b-2 border-primary-600 px-1 py-5' : 'text-gray-600 hover:text-gray-900'}`}>Workshops</Link>
+                <Link to="/community" className={`text-sm font-medium ${location.pathname === '/community' ? 'text-primary-600 border-b-2 border-primary-600 px-1 py-5' : 'text-gray-600 hover:text-gray-900'}`}>Community</Link>
+              </div>
+            )}
 
             <div className="flex items-center space-x-6">
-              {user || isDashboard ? (
+              {(!isLandingPage && (user || isDashboard)) ? (
                 <>
                   <button className="text-gray-500 hover:text-gray-900 transition-colors">
                     <FaSearch size={18} />
