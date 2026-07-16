@@ -11,20 +11,6 @@ router.post('/reserve', async (req, res) => {
   }
 
   try {
-    // We are using Ethereal Email for testing.
-    // It creates a fake SMTP service and gives us a URL to view the sent email.
-    let testAccount = await nodemailer.createTestAccount();
-
-    let transporter = nodemailer.createTransport({
-      host: "smtp.ethereal.email",
-      port: 587,
-      secure: false, 
-      auth: {
-        user: testAccount.user,
-        pass: testAccount.pass,
-      },
-    });
-
     // Generate random entry key
     const entryKey = Math.random().toString(36).substring(2, 10).toUpperCase();
     
@@ -33,41 +19,57 @@ router.post('/reserve', async (req, res) => {
     const dateObj = new Date();
     const paymentDate = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString();
 
-    // Prepare template data
-    const templateData = {
-      userName: userName || 'Festival Goer',
-      paymentId: paymentId,
-      paymentDate: paymentDate,
-      amount: price || 0,
-      paymentMethod: 'Credit Card (Stripe)',
-      ticketType: ticketType || 'Standard',
-      entryKey: entryKey,
-      workshopsCount: ticketType === 'Pro' ? 6 : (ticketType === 'VIP' ? 'All' : 2)
-    };
-
-    const htmlContent = getBookingEmailTemplate(templateData);
-
-    let info = await transporter.sendMail({
-      from: '"SkillSwap Festival" <tickets@skillswap.com>',
-      to: userEmail,
-      subject: "🎉 Booking Confirmed! Your SkillSwap Festival Entry Pass is Ready",
-      html: htmlContent,
+    // Send immediate success response to make the popup lightning fast
+    res.status(200).json({ 
+      message: 'Booking confirmed! Your pass is ready.',
+      paymentId: paymentId
     });
 
-    console.log("Message sent: %s", info.messageId);
-    
-    // Preview only available when sending through an Ethereal account
-    const previewUrl = nodemailer.getTestMessageUrl(info);
-    console.log("Preview URL: %s", previewUrl);
+    // Fire-and-forget: run the slow Ethereal email generation in the background
+    setImmediate(async () => {
+      try {
+        let testAccount = await nodemailer.createTestAccount();
 
-    res.status(200).json({ 
-      message: 'Booking confirmed and email sent successfully',
-      previewUrl: previewUrl
+        let transporter = nodemailer.createTransport({
+          host: "smtp.ethereal.email",
+          port: 587,
+          secure: false, 
+          auth: {
+            user: testAccount.user,
+            pass: testAccount.pass,
+          },
+        });
+
+        const templateData = {
+          userName: userName || 'Festival Goer',
+          paymentId: paymentId,
+          paymentDate: paymentDate,
+          amount: price || 0,
+          paymentMethod: 'Credit Card (Stripe)',
+          ticketType: ticketType || 'Standard',
+          entryKey: entryKey,
+          workshopsCount: ticketType === 'Pro' ? 6 : (ticketType === 'VIP' ? 'All' : 2)
+        };
+
+        const htmlContent = getBookingEmailTemplate(templateData);
+
+        let info = await transporter.sendMail({
+          from: '"SkillSwap Festival" <tickets@skillswap.com>',
+          to: userEmail,
+          subject: "🎉 Booking Confirmed! Your SkillSwap Festival Entry Pass is Ready",
+          html: htmlContent,
+        });
+
+        console.log("Background email sent: %s", info.messageId);
+        console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+      } catch (err) {
+        console.error("Background email failed to send (Ethereal network error):", err);
+      }
     });
 
   } catch (error) {
-    console.error('Error sending email:', error);
-    res.status(500).json({ message: 'Failed to send confirmation email' });
+    console.error('Error booking:', error);
+    res.status(500).json({ message: 'Failed to process booking' });
   }
 });
 
