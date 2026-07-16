@@ -10,6 +10,12 @@ import {
 const LandingPage = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState('login');
+
+  const openAuthModal = (mode) => {
+    setAuthMode(mode);
+    setIsAuthModalOpen(true);
+  };
 
   const heroImages = [
     '/hero-banner.jpg', // Main stage
@@ -51,9 +57,19 @@ const LandingPage = () => {
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 leading-tight max-w-3xl drop-shadow-lg">
             One Festival. Endless<br/>Skills. <span className="text-blue-200">New City Every<br/>Time.</span>
           </h1>
-          <p className="text-lg md:text-xl text-gray-100 max-w-2xl mb-12 drop-shadow-md font-medium">
+          <p className="text-lg md:text-xl text-gray-100 max-w-2xl mb-8 drop-shadow-md font-medium">
             Discover SkillSwap festivals happening across different cities. Learn from experts, join hands-on workshops, and unlock new crafts.
           </p>
+
+          {/* Call to Action Buttons */}
+          <div className="flex flex-wrap gap-4 mb-12">
+            <button onClick={() => openAuthModal('signup')} className="bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-8 rounded-full transition-colors shadow-lg shadow-primary-600/30">
+              Join Event
+            </button>
+            <button onClick={() => openAuthModal('login')} className="bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/30 font-bold py-3 px-8 rounded-full transition-colors">
+              Sign In
+            </button>
+          </div>
           
           {/* Search/Filter Bar */}
           <div className="bg-white/90 backdrop-blur-md p-2 rounded-full shadow-2xl flex flex-col sm:flex-row items-center gap-2 w-full max-w-3xl border border-white/50">
@@ -98,17 +114,17 @@ const LandingPage = () => {
           <FestivalCard 
             city="Chennai" date="Oct 24" loc="ECR Coastal Grounds" 
             upcoming="45+" mentors="12" img="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=600" 
-            tag="HOT EVENT" onExplore={() => setIsAuthModalOpen(true)} 
+            tag="HOT EVENT" onExplore={() => openAuthModal('login')} 
           />
           <FestivalCard 
             city="Bangalore" date="Nov 05" loc="Electronic City" 
             upcoming="60+" mentors="25" img="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&q=80&w=600" 
-            tag="FILLING FAST" onExplore={() => setIsAuthModalOpen(true)} 
+            tag="FILLING FAST" onExplore={() => openAuthModal('login')} 
           />
           <FestivalCard 
             city="Hyderabad" date="Nov 22" loc="Hitex Exhibition" 
             upcoming="30+" mentors="15" img="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=600" 
-            tag="PREMIUM" onExplore={() => setIsAuthModalOpen(true)} 
+            tag="PREMIUM" onExplore={() => openAuthModal('login')} 
           />
         </div>
       </div>
@@ -246,7 +262,7 @@ const LandingPage = () => {
       </div>
 
     </div>
-    <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} />
+    <AuthModal isOpen={isAuthModalOpen} onClose={() => setIsAuthModalOpen(false)} initialMode={authMode} />
     </>
   );
 };
