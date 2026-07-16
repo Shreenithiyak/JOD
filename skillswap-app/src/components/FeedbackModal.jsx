@@ -203,16 +203,22 @@ const FeedbackModal = ({ isOpen, onClose }) => {
             
             <div className="space-y-6">
               <div>
-                <label className="block text-xs font-medium text-gray-900 mb-2">What was your breakthrough moment?</label>
+                <label className="block text-xs font-medium text-gray-900 mb-2">
+                  What was your breakthrough moment? <span className="text-red-500">*</span>
+                </label>
                 <textarea 
+                  required
                   rows="3" 
                   placeholder="Tell us about a specific talk or interaction that inspired you..."
                   className="w-full bg-white border border-gray-200 rounded-2xl p-4 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none transition-all resize-none text-gray-900 placeholder:text-gray-300 font-medium"
                 ></textarea>
               </div>
               <div>
-                <label className="block text-xs font-medium text-gray-900 mb-2">How can we improve for 2025?</label>
+                <label className="block text-xs font-medium text-gray-900 mb-2">
+                  How can we improve for 2025? <span className="text-red-500">*</span>
+                </label>
                 <textarea 
+                  required
                   rows="3" 
                   placeholder="Suggestions on scheduling, logistics, or new themes..."
                   className="w-full bg-white border border-gray-200 rounded-2xl p-4 text-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500 outline-none transition-all resize-none text-gray-900 placeholder:text-gray-300 font-medium"
