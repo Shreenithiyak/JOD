@@ -103,4 +103,55 @@ router.post('/signout', async (req, res) => {
   }
 });
 
+// Google Login
+router.post('/google', async (req, res) => {
+  const { access_token } = req.body;
+  if (!access_token) {
+    return res.status(400).json({ message: 'Missing access token' });
+  }
+
+  try {
+    const googleRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: `Bearer ${access_token}` }
+    });
+    
+    if (!googleRes.ok) {
+      return res.status(400).json({ message: 'Failed to fetch user from Google' });
+    }
+    
+    const userInfo = await googleRes.json();
+    const { email, name } = userInfo;
+
+    let user = await User.findOne({ email });
+    if (!user) {
+      const crypto = require('crypto');
+      const randomPassword = crypto.randomBytes(16).toString('hex');
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(randomPassword, salt);
+      
+      user = new User({
+        name: name || 'Google User',
+        email,
+        password: hashedPassword
+      });
+      await user.save();
+    }
+
+    const payload = { user: { id: user.id } };
+
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET || 'secret',
+      { expiresIn: '1h' },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token, user: { name: user.name, email: user.email } });
+      }
+    );
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
 module.exports = router;

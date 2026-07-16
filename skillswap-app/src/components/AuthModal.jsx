@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 import { FaEnvelope, FaLock, FaUser, FaCheckCircle, FaGithub, FaTimes, FaEye, FaEyeSlash } from 'react-icons/fa';
+import { useGoogleLogin } from '@react-oauth/google';
 
 const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   const [mode, setMode] = useState(initialMode);
@@ -22,7 +23,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
     if (mode === 'login' && email && password) {
       try {
-        const res = await fetch('http://localhost:5000/api/auth/login', {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
@@ -47,7 +48,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
       }
       if (name && email && password) {
         try {
-          const res = await fetch('http://localhost:5000/api/auth/register', {
+          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email, password })
@@ -66,6 +67,31 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
       }
     }
   };
+
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (codeResponse) => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/google`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ access_token: codeResponse.access_token })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          onClose();
+          navigate('/dashboard');
+        } else {
+          setError(data.message || 'Error with Google Login');
+        }
+      } catch (err) {
+        console.error('Google login error', err);
+        setError('Server error during Google login');
+      }
+    },
+    onError: (error) => console.log('Login Failed:', error)
+  });
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -230,7 +256,7 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
           </div>
 
           <div className="mt-5 grid grid-cols-2 gap-4">
-            <button type="button" className="w-full inline-flex justify-center items-center py-2 px-4 border border-gray-200 rounded-xl shadow-sm bg-white text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+            <button type="button" onClick={() => handleGoogleLogin()} className="w-full inline-flex justify-center items-center py-2 px-4 border border-gray-200 rounded-xl shadow-sm bg-white text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors">
               <FcGoogle className="mr-2" size={16} />
               Google
             </button>

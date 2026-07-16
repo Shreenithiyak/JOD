@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FcGoogle } from 'react-icons/fc';
 import { FaGithub, FaUser, FaEnvelope, FaLock, FaCheckCircle } from 'react-icons/fa';
+import { useGoogleLogin } from '@react-oauth/google';
 
 const SignUp = () => {
   const [name, setName] = useState('');
@@ -14,7 +15,7 @@ const SignUp = () => {
     e.preventDefault();
     if (name && email && password && password === confirmPassword) {
       try {
-        const res = await fetch('http://localhost:5000/api/auth/register', {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, password })
@@ -36,6 +37,30 @@ const SignUp = () => {
       alert('Please fill all fields correctly. Passwords must match.');
     }
   };
+
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (codeResponse) => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/google`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ access_token: codeResponse.access_token })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          navigate('/dashboard');
+        } else {
+          alert(data.message || 'Error with Google Login');
+        }
+      } catch (err) {
+        console.error('Google login error', err);
+        alert('Server error during Google login');
+      }
+    },
+    onError: (error) => console.log('Login Failed:', error)
+  });
 
   return (
     <div className="min-h-screen flex">
@@ -158,7 +183,7 @@ const SignUp = () => {
             </div>
 
             <div className="mt-6 grid grid-cols-2 gap-4">
-              <button type="button" className="w-full inline-flex justify-center items-center py-2.5 px-4 border border-gray-200 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+              <button type="button" onClick={() => handleGoogleLogin()} className="w-full inline-flex justify-center items-center py-2.5 px-4 border border-gray-200 rounded-xl shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
                 <FcGoogle className="mr-2" size={18} />
                 Google
               </button>
