@@ -42,7 +42,7 @@ const PassBookingCard = ({ passes }) => {
       
       const data = await res.json();
       if (res.ok) {
-        showToast("Pass reserved successfully! A confirmation email has been sent.", 'success');
+        showToast("Pass reserved successfully! A confirmation email will be sent soon with your ticket and details.", 'success');
         if (data.previewUrl) {
           console.log("Email Preview URL:", data.previewUrl);
         }
