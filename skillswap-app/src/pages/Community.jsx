@@ -8,7 +8,14 @@ import FeedbackModal from '../components/FeedbackModal';
 
 const Community = () => {
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const [showInquiryToast, setShowInquiryToast] = useState(false);
   const navigate = useNavigate();
+
+  const handleInquirySubmit = (e) => {
+    e.preventDefault();
+    setShowInquiryToast(true);
+    setTimeout(() => setShowInquiryToast(false), 4000);
+  };
 
   return (
     <div className="bg-[#FAFAFA] min-h-screen font-sans overflow-x-hidden pt-16">
@@ -279,9 +286,16 @@ const Community = () => {
 
           {/* Right Form Card */}
           <div className="w-full lg:w-1/2 relative z-10 flex lg:justify-end">
-            <div className="bg-white/95 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl w-full max-w-md">
-              <h3 className="text-lg font-bold text-gray-900 mb-6">Quick Inquiry</h3>
-              <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+            <div className="bg-white/95 backdrop-blur-2xl p-8 rounded-3xl shadow-2xl w-full max-w-md relative overflow-hidden">
+              
+              {showInquiryToast && (
+                <div className="absolute top-0 left-0 w-full bg-green-500 text-white text-sm font-bold py-3 px-4 text-center z-20 transition-all shadow-md">
+                  Inquiry submitted! Our team will connect with you shortly.
+                </div>
+              )}
+
+              <h3 className="text-lg font-bold text-gray-900 mb-6 mt-2">Quick Inquiry</h3>
+              <form className="space-y-5" onSubmit={handleInquirySubmit}>
                 <div>
                   <label className="block text-[10px] font-bold text-gray-600 mb-2 uppercase tracking-wide">Organization Name</label>
                   <input type="text" placeholder="e.g. FutureTech Academics" className="w-full bg-white border border-gray-200 focus:border-primary-500 focus:ring-1 focus:ring-primary-500 px-4 py-3.5 rounded-xl outline-none text-gray-900 text-sm font-medium transition-all shadow-sm" />
