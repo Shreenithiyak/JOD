@@ -95,17 +95,17 @@ const LandingPage = () => {
           <FestivalCard 
             city="Chennai" date="Oct 24" loc="ECR Coastal Grounds" 
             upcoming="45+" mentors="12" img="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&q=80&w=600" 
-            tag="HOT EVENT" path="/festivals" 
+            tag="HOT EVENT" path="/login" 
           />
           <FestivalCard 
             city="Bangalore" date="Nov 05" loc="Electronic City" 
             upcoming="60+" mentors="25" img="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&q=80&w=600" 
-            tag="FILLING FAST" path="/festivals" 
+            tag="FILLING FAST" path="/login" 
           />
           <FestivalCard 
             city="Hyderabad" date="Nov 22" loc="Hitex Exhibition" 
             upcoming="30+" mentors="15" img="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=600" 
-            tag="PREMIUM" path="/festivals" 
+            tag="PREMIUM" path="/login" 
           />
         </div>
       </div>
@@ -277,7 +277,7 @@ const FestivalCard = ({ city, date, loc, upcoming, mentors, img, tag, path }) =>
       </div>
       <div className="mt-4 flex justify-between items-center border-t border-gray-50 pt-4">
         <span className="text-xs text-red-500 font-medium">Only 12 tickets left!</span>
-        <Link to="/login" className="text-sm font-bold text-primary-600 hover:text-primary-700 flex items-center gap-1">
+        <Link to={path} className="text-sm font-bold text-primary-600 hover:text-primary-700 flex items-center gap-1">
           Explore →
         </Link>
       </div>
