@@ -15,6 +15,31 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (codeResponse) => {
+      try {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/google`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ access_token: codeResponse.access_token })
+        });
+        const data = await res.json();
+        if (res.ok) {
+          localStorage.setItem('token', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          onClose();
+          navigate('/dashboard');
+        } else {
+          setError(data.message || 'Error with Google Login');
+        }
+      } catch (err) {
+        console.error('Google login error', err);
+        setError('Server error during Google login');
+      }
+    },
+    onError: (error) => console.log('Login Failed:', error)
+  });
+
   if (!isOpen) return null;
 
   const handleSubmit = async (e) => {
@@ -67,31 +92,6 @@ const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
       }
     }
   };
-
-  const handleGoogleLogin = useGoogleLogin({
-    onSuccess: async (codeResponse) => {
-      try {
-        const res = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/google`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ access_token: codeResponse.access_token })
-        });
-        const data = await res.json();
-        if (res.ok) {
-          localStorage.setItem('token', data.token);
-          localStorage.setItem('user', JSON.stringify(data.user));
-          onClose();
-          navigate('/dashboard');
-        } else {
-          setError(data.message || 'Error with Google Login');
-        }
-      } catch (err) {
-        console.error('Google login error', err);
-        setError('Server error during Google login');
-      }
-    },
-    onError: (error) => console.log('Login Failed:', error)
-  });
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
